@@ -122,7 +122,7 @@ def main():
 	# print(len(recipe_links))
 
 	with Pool(15) as p:
-		p.map(get_recipe_info, recipe_links[:1000])
+		p.map(get_recipe_info, recipe_links)
 
 
 	end_time = datetime.now()
