@@ -45,7 +45,7 @@ def get_ingredients(soup):
     amounts_ingredients = soup.find('table', class_="incredients").find_all('tr')
 
     for tr in amounts_ingredients:
-        td = tr.find_all('td')[1].text.encode('utf-8').strip()
+        td = tr.find_all('td')[1].text.strip()
         ingredient_list.append(td)
 
     return(ingredient_list)
@@ -55,7 +55,7 @@ def get_tags(soup):
 	tags = []
 	tag_cloud = soup.find('ul', class_ = 'tagcloud').find_all('li')
 	for li in tag_cloud:
-	    tags.append(li.find('a').text.encode('utf-8').strip())
+	    tags.append(li.find('a').text.strip())
 	
 	return(tags)
 
@@ -98,7 +98,7 @@ def get_recipe_info(url):
 	write_recipe_details(data)
 
 def write_recipe_details(data):
-    with open('recipes.csv', 'a', newline='') as f:
+    with open('recipes_encode.csv', 'a', newline='') as f:
         writer = csv.writer(f)
 
         try:
@@ -121,7 +121,7 @@ def main():
 	recipe_links = get_list_of_recipes()
 	# print(len(recipe_links))
 
-	with Pool(15) as p:
+	with Pool(20) as p:
 		p.map(get_recipe_info, recipe_links)
 
 
