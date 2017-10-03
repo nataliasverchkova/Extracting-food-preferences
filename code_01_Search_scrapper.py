@@ -5,12 +5,21 @@ from multiprocessing import Pool
 import csv
 import urllib.request
 import os
+import datetime as dt
 
 # print(os.getcwd())
 
 
 # url = 'http://www.chefkoch.de/rs/s0g145/Brot-und-Broetchen-Rezepte.html'
 
+NOW           = dt.datetime.now()
+FILE_NAME     = 'chefkoch_search_page' + NOW.strftime('%m-%d-%Y') + '.csv'
+DATAST_FOLDER = 'dataset//'
+SPICS_FOLDER  = 'pictures//search_pics//'
+
+CHEFKOCH_URL  = 'http://www.chefkoch.de'
+START_URL     = 'http://www.chefkoch.de/rs/s'
+CATEGORY      = '/Rezepte.html'
 
 def get_html(url):
     r = requests.get(url)
@@ -23,7 +32,8 @@ def get_total_pages(html):
     return int(total_pages)
 
 def write_to_recipes(data):
-    with open('chefkoch.csv', 'a', newline='') as f:
+    path = DATAST_FOLDER + FILE_NAME
+    with open(path, 'a', newline='') as f:
         writer = csv.writer(f)
 
         writer.writerow((data['recipe_id'],
@@ -63,7 +73,7 @@ def get_front_page(html):
         try: 
             if li.find('picture') is not None:
                 img_link = get_picture_link(li)
-                img_name = 'pics/' + str(id_r) + '.jpg'
+                img_name = SPICS_FOLDER + str(id_r) + '.jpg'
                 urllib.request.urlretrieve(img_link, img_name)
                 has_pic = 'yes'
             else: 
@@ -73,8 +83,7 @@ def get_front_page(html):
 
         # link to the full recipe info
         try:
-            koch_url = 'http://www.chefkoch.de'
-            link = koch_url + li.find('a').get('href')
+            link = CHEFKOCH_URL + li.find('a').get('href')
         except:
             link = ''
 
@@ -152,20 +161,17 @@ def main():
     
     start = datetime.now()
 
-    start_url = 'http://www.chefkoch.de/rs/s'
-    category  = '/Rezepte.html'
-
     # for category in urls_categories:
 
-    category_url = start_url + '0o3' + category
+    category_url = START_URL + '0o3' + CATEGORY
     total_pages = get_total_pages(get_html(category_url))
     # print(start_url, total_pages)
 
     url_list = []
-    for i in range(0, total_pages + 1):
-    # for i in range(0, 100):
+    #for i in range(0, total_pages + 1):
+    for i in range(0, 10):
         
-        url_to_scrap = start_url + str(i * 30) + 'o3' + category
+        url_to_scrap = START_URL + str(i * 30) + 'o3' + CATEGORY
         url_list.append(url_to_scrap)
 
     with Pool(15) as p:

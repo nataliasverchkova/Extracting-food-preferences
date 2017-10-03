@@ -1,13 +1,23 @@
-from scrapper import get_html
+from code_01_Search_scrapper import get_html
+import datetime as dt
 import csv
 from bs4 import BeautifulSoup
 from datetime import datetime
 from multiprocessing import Pool
+import re
+import os
+
+NOW           = dt.datetime.now()
+DATAST_FOLDER = 'dataset//'
+SPICS_FOLDER  = 'pictures//search_pics//'
+DFILE_NAME    = 'recipe_details' + NOW.strftime('%m-%d-%Y') + '.csv'
 
 def get_list_of_recipes():
 
 	recipe_links = []
-	with open('chefkoch.csv', 'r') as f:
+	chef_file = DATAST_FOLDER + 'chefkoch_search_page10-03-2017.csv'
+
+	with open(chef_file, 'r') as f:
 	     chefkoch = csv.reader(f)
 	     for row in chefkoch:
 	         try:
@@ -45,10 +55,11 @@ def get_ingredients(soup):
     amounts_ingredients = soup.find('table', class_="incredients").find_all('tr')
 
     for tr in amounts_ingredients:
-        td = tr.find_all('td')[1].text.strip()
+        td = tr.find_all('td')[1].text.strip().split(',')[0]
+        td = re.sub('\(.*?\)','', td)
         ingredient_list.append(td)
 
-    return(ingredient_list)
+    return(str.join('@', ingredient_list))
 
 def get_tags(soup):
 
@@ -57,7 +68,7 @@ def get_tags(soup):
 	for li in tag_cloud:
 	    tags.append(li.find('a').text.strip())
 	
-	return(tags)
+	return(str.join('@', tags))
 
 def get_author_info(soup):
 
@@ -98,7 +109,8 @@ def get_recipe_info(url):
 	write_recipe_details(data)
 
 def write_recipe_details(data):
-    with open('recipes_encode.csv', 'a', newline='') as f:
+    dpath = DATAST_FOLDER + DFILE_NAME
+    with open(dpath, 'a', newline='') as f:
         writer = csv.writer(f)
 
         try:
@@ -117,6 +129,7 @@ def write_recipe_details(data):
 def main():
 
 	start_time = datetime.now()
+	print(start_time)
 
 	recipe_links = get_list_of_recipes()
 	# print(len(recipe_links))
