@@ -83,8 +83,9 @@ def get_author_info(soup):
 
 def get_recipe_info(url):
 
+
+	html = get_html(url)
 	try:
-		html = get_html(url)
 		soup = BeautifulSoup(html, 'lxml')
 
 		# lists of tags and ingredients
@@ -104,7 +105,7 @@ def get_recipe_info(url):
 
 	except:
 		data = ''
-
+	
 	# append to the file 
 	write_recipe_details(data)
 
@@ -132,9 +133,9 @@ def main():
 	print(start_time)
 
 	recipe_links = get_list_of_recipes()
-	# print(len(recipe_links))
+	print(len(recipe_links)/100*18/3600)
 
-	with Pool(20) as p:
+	with Pool(15) as p:
 		p.map(get_recipe_info, recipe_links)
 
 

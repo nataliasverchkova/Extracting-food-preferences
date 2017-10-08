@@ -1,6 +1,7 @@
 import requests
 from bs4 import BeautifulSoup
 from datetime import datetime
+import time
 from multiprocessing import Pool
 import csv
 import urllib.request
@@ -22,8 +23,18 @@ START_URL     = 'http://www.chefkoch.de/rs/s'
 CATEGORY      = '/Rezepte.html'
 
 def get_html(url):
-    r = requests.get(url)
-    return r.text
+    page = ''
+    while page == '':
+        try:
+            page = requests.get(url)
+        except:
+            print("Connection refused by the server..")
+            print("Let me sleep for 5 seconds")
+            print("ZZzzzz...")
+            time.sleep(5)
+            print("Was a nice sleep, now let me continue...")
+            continue
+    return page.text
 
 def get_total_pages(html):
     soup = BeautifulSoup(html, 'lxml')
@@ -168,8 +179,10 @@ def main():
     # print(start_url, total_pages)
 
     url_list = []
-    #for i in range(0, total_pages + 1):
-    for i in range(0, 10):
+    estim_time = (total_pages + 1)/100 * 45/60
+    print(estim_time)
+    for i in range(0, total_pages + 1):
+    #for i in range(0, 100):
         
         url_to_scrap = START_URL + str(i * 30) + 'o3' + CATEGORY
         url_list.append(url_to_scrap)
