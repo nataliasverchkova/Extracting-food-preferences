@@ -1,9 +1,12 @@
 from code_01_Search_scrapper import get_html
 import datetime as dt
 import csv
+import time
 from bs4 import BeautifulSoup
 from datetime import datetime
 from multiprocessing import Pool
+from random import uniform
+from random import choice
 import re
 import os
 
@@ -11,6 +14,21 @@ NOW           = dt.datetime.now()
 DATAST_FOLDER = 'dataset//'
 SPICS_FOLDER  = 'pictures//search_pics//'
 DFILE_NAME    = 'recipe_details' + NOW.strftime('%m-%d-%Y') + '.csv'
+URL_TO_IP     = 'http://sitespy.ru/my-ip'
+
+# def get_html(url, useragent=None, proxy=None):
+#     page = ''
+#     while page == '':
+#         try:
+#             page = requests.get(url, headers=useragent, proxies=proxy)
+#         except:
+#             #print("Connection refused by the server..")
+#             #print("Let me sleep for 5 seconds")
+#             #print("ZZzzzz...")
+#             time.sleep(3)
+#             #print("Was a nice sleep, now let me continue...")
+#             continue
+#     return page.text
 
 def get_list_of_recipes():
 
@@ -26,6 +44,31 @@ def get_list_of_recipes():
 	         	continue 
 
 	return(recipe_links)
+
+def get_list_of_scraped_recipes():
+
+	recipe_links = []
+	recipes_file = DATAST_FOLDER + DFILE_NAME
+
+	with open(recipes_file, 'r') as f:
+	     chefkoch = csv.reader(f)
+	     for row in chefkoch:
+	         try:
+	         	recipe_links.append(row[0])
+	         except: 
+	         	continue 
+
+	return(recipe_links)
+
+def list_to_scrape():
+
+	l_scraped = get_list_of_scraped_recipes()
+	l_all     = get_list_of_recipes() 
+
+	l_to_scrape = list(set(l_all) - set(l_scraped))
+	print(len(l_to_scrape))
+
+	return(l_to_scrape)
 
 def get_stats(soup):
 
@@ -83,6 +126,9 @@ def get_author_info(soup):
 
 def get_recipe_info(url):
 
+	sleep_time = uniform(2, 4)
+	time.sleep(sleep_time)
+
 
 	html = get_html(url)
 	try:
@@ -105,7 +151,7 @@ def get_recipe_info(url):
 
 	except:
 		data = ''
-	
+
 	# append to the file 
 	write_recipe_details(data)
 
@@ -127,21 +173,45 @@ def write_recipe_details(data):
         except:
 	        writer.writerow('')
 
+def get_ip(html):
+
+	print('New proxy and User-Agent: ')
+	soup = BeautifulSoup(html, 'lxml')
+	ip = soup.find('span', class_='ip').text.strip()
+	ua = soup.find('span', class_='ip').find_next_sibling('span').text.strip()
+	print(ip)
+	print(ua)
+	print('----------------')
+
 def main():
 
 	start_time = datetime.now()
 	print(start_time)
 
-	recipe_links = get_list_of_recipes()
-	print(len(recipe_links)/100*18/3600)
+	recipe_links = list_to_scrape()
+	print(len(recipe_links)/1000*7/60)
 
 	with Pool(15) as p:
-		p.map(get_recipe_info, recipe_links)
+		p.map(get_recipe_info, recipe_links[:5000])
 
 
 	end_time = datetime.now()
 	total = end_time - start_time
 	print(total)
+
+	# useragents = open('useragents.txt').read().split('\n')
+	# proxies    = open('proxies.txt').read().split('\n')
+
+	# proxy = {'http' : 'http://' + choice(proxies)}
+	# useragent = {'User-Agent' : choice(useragents)}
+
+	# print(proxy)
+	# print(useragent)
+
+	# html = get_html(URL_TO_IP, useragent)
+	# print(html)
+	# get_ip(html)
+
 
 
 
