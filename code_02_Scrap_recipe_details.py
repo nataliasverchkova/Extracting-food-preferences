@@ -30,6 +30,30 @@ URL_TO_IP     = 'http://sitespy.ru/my-ip'
 #             continue
 #     return page.text
 
+
+def get_html(url):
+    # check if url was already downloaded, get it from cache and return, else:
+    
+    i = 5
+    
+    while i>0:
+        try:
+            page = requests.get(url)
+            if page.status_code != requests.codes.ok:
+                page.raise_for_status()
+            else:
+                return request.text        
+        except requests.exceptions.RequestException as e:
+            print("Could not fetch " + url)
+            print(e)
+            # save url to list of failed links
+            sleep 5
+            i = i - 1
+            continue
+
+        print("Could not fetch " + url + " for 5 times, giving up")
+        return None
+
 def get_list_of_recipes():
 
 	recipe_links = []
