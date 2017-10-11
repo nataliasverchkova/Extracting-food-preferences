@@ -6,8 +6,10 @@ import numpy as np
 
 NOW           = dt.datetime.now()
 DATAST_FOLDER = 'dataset//'
-FILE_NAME     = 'chefkoch_search_page' + NOW.strftime('%m-%d-%Y') + '.csv'
-DFILE_NAME    = 'recipe_details' + NOW.strftime('%m-%d-%Y') + '.csv'
+#FILE_NAME     = 'chefkoch_search_page' + NOW.strftime('%m-%d-%Y') + '.csv'
+FILE_NAME    = 'chefkoch_search_page10-03-2017.csv'
+#DFILE_NAME    = 'recipe_details' + NOW.strftime('%m-%d-%Y') + '.csv'
+DFILE_NAME    = 'recipe_details10-09-2017.csv'
 FFILE_NAME    = 'recipes_df' + NOW.strftime('%m-%d-%Y') + '.csv'
 
 def main():
