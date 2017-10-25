@@ -3,6 +3,7 @@ import datetime as dt
 import base64
 import csv
 import numpy as np
+from ftfy import fix_encoding
 
 NOW           = dt.datetime.now()
 DATAST_FOLDER = 'dataset//'
@@ -105,6 +106,10 @@ def main():
 	# create nested lists in the columns with ingredients and tags
 	recipes_df[['tags']] = recipes_df[['tags']].apply(lambda x: x.str.replace(r'[\[\]]', ''))
 	recipes_df[['ingredients']] = recipes_df[['ingredients']].apply(lambda x: x.str.replace(r'[\[\]]', ''))
+
+	# fix encoding
+	recipes_df['tags'] = recipes_df['tags'].apply(lambda x: fix_encoding(x))
+	recipes_df['ingredients'] = recipes_df['ingredients'].apply(lambda x: fix_encoding(x))
 
 	recipes_df['tags'] = [x.split("@") for x in recipes_df['tags']]
 	recipes_df['ingredients'] = [x.split("@") for x in recipes_df['ingredients']]
