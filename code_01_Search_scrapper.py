@@ -28,11 +28,7 @@ def get_html(url):
         try:
             page = requests.get(url)
         except:
-            #print("Connection refused by the server..")
-            #print("Let me sleep for 5 seconds")
-            #print("ZZzzzz...")
             time.sleep(5)
-            #print("Was a nice sleep, now let me continue...")
             continue
     return page.text
 
@@ -167,8 +163,6 @@ def please_scrap(url):
 
 
 def main():
-
-    # http://www.chefkoch.de/rs/s30o3/Rezepte.html
     
     start = datetime.now()
 
@@ -176,7 +170,6 @@ def main():
 
     category_url = START_URL + '0o3' + CATEGORY
     total_pages = get_total_pages(get_html(category_url))
-    # print(start_url, total_pages)
 
     url_list = []
     estim_time = (total_pages + 1)/100 * 45/60

@@ -14,21 +14,6 @@ NOW           = dt.datetime.now()
 DATAST_FOLDER = 'dataset//'
 SPICS_FOLDER  = 'pictures//search_pics//'
 DFILE_NAME    = 'recipe_details' + NOW.strftime('%m-%d-%Y') + '.csv'
-URL_TO_IP     = 'http://sitespy.ru/my-ip'
-
-# def get_html(url, useragent=None, proxy=None):
-#     page = ''
-#     while page == '':
-#         try:
-#             page = requests.get(url, headers=useragent, proxies=proxy)
-#         except:
-#             #print("Connection refused by the server..")
-#             #print("Let me sleep for 5 seconds")
-#             #print("ZZzzzz...")
-#             time.sleep(3)
-#             #print("Was a nice sleep, now let me continue...")
-#             continue
-#     return page.text
 
 
 def get_html(url):
@@ -197,16 +182,6 @@ def write_recipe_details(data):
         except:
 	        writer.writerow('')
 
-def get_ip(html):
-
-	print('New proxy and User-Agent: ')
-	soup = BeautifulSoup(html, 'lxml')
-	ip = soup.find('span', class_='ip').text.strip()
-	ua = soup.find('span', class_='ip').find_next_sibling('span').text.strip()
-	print(ip)
-	print(ua)
-	print('----------------')
-
 def main():
 
 	start_time = datetime.now()
@@ -222,22 +197,6 @@ def main():
 	end_time = datetime.now()
 	total = end_time - start_time
 	print(total)
-
-	# useragents = open('useragents.txt').read().split('\n')
-	# proxies    = open('proxies.txt').read().split('\n')
-
-	# proxy = {'http' : 'http://' + choice(proxies)}
-	# useragent = {'User-Agent' : choice(useragents)}
-
-	# print(proxy)
-	# print(useragent)
-
-	# html = get_html(URL_TO_IP, useragent)
-	# print(html)
-	# get_ip(html)
-
-
-
 
 
 
