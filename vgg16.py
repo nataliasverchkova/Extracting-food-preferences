@@ -238,4 +238,4 @@ class Vgg16():
         return test_batches, self.model.predict_generator(test_batches, test_batches.nb_sample)
 
     def predict_gen(self, batches):
-        return batches, self.model.predict_generator(batches, batches.nb_sample)
+        return self.model.predict_generator(batches, batches.nb_sample)
